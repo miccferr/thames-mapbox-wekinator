@@ -16,6 +16,17 @@ app.get('/', function(req, res){
   res.render('index.html');
 });
 
+var WekinatorNode = require('wekinator-node')
+
+var wn = new WekinatorNode('0.0.0.0',6448);
+wn.connect(function(){
+  // wn.train();
+  wn.on("osc", function(a){
+			// When we recieve a message from Wekinator, log it
+			console.log(a);
+		});
+});
+
 // // Listen for Web Socket requests.
 // var wss = new WebSocket.Server({
 //     server: server
