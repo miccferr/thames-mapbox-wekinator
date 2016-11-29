@@ -1,52 +1,44 @@
 
 var osc = require("osc"),
     http = require("http"),
-    // WebSocket = require("ws"),
+    server = http.createServer();
+    WebSocketServer = require('ws').Server,
+    wss = new WebSocketServer({ server: server }),
     express = require('express'),
     app = express(),
-    path = require("path");
+    path = require("path"),
+    WekinatorNode = require('wekinator-node'),
+    wn = new WekinatorNode('0.0.0.0',6448);
 
 
-
-server = app.listen(8081);
-
+// serve from static files folder
 app.use( express.static(path.join(__dirname, 'public')))
-
 app.get('/', function(req, res){
   res.render('index.html');
 });
 
-var WekinatorNode = require('wekinator-node')
+// wensocket connect to client
+wss.on('connection', function connection(ws) {
+  console.log("websocket established");
 
-var wn = new WekinatorNode('0.0.0.0',6448);
-wn.connect(function(){
-  // wn.train();
-  wn.on("osc", function(a){
-			// When we recieve a message from Wekinator, log it
-			console.log(a);
-		});
+  // connect to wekinator
+  wn.connect(function(){
+    console.log("wekinator established");
+    //if incoming message from client
+    ws.on('message', function incoming(message) {
+      console.log('received: %s', message);
+    });
+    // When we recieve a message from Wekinator..
+    wn.on("osc", function(a){
+  			// log it
+  			console.log(a);
+        // send it to client
+        ws.send(JSON.stringify(a));
+  		});
+  });
 });
 
-// // Listen for Web Socket requests.
-// var wss = new WebSocket.Server({
-//     server: server
-// });
-//
-// // Listen for Web Socket connections.
-// wss.on("connection", function (socket) {
-//
-//   console.log("connection established!");
-//
-//     var socketPort = new osc.WebSocketPort({
-//         socket: socket
-//     });
-//
-//     socketPort.on("message", function (oscMsg) {
-//         console.log("An OSC Message was received!", oscMsg);
-//     });
-//
-//     socketPort.send({
-//         address: "/carrier/frequency",
-//         args: "sadasdasdas"
-//     });
-// });
+
+// start server
+server.on('request', app);
+server.listen(8081);

@@ -10,9 +10,12 @@ var map = new mapboxgl.Map({
 });
 
 
+var ws = new WebSocket('ws://localhost:8081');
+      ws.onmessage = function (event) {
+        console.log(event);
+      };
 
-
-
+      
 // var oscPort = new osc.WebSocketPort({
 //     url: "ws://localhost:8081" // URL to your Web Socket server.
 // });
