@@ -12,27 +12,16 @@ var map = new mapboxgl.Map({
 
 var ws = new WebSocket('ws://localhost:8081');
       ws.onmessage = function (event) {
-        console.log(event);
-      };
+        // console.log(JSON.parse(event.data));
+        var argsArray = JSON.parse(event.data)
+        var mode = argsArray.args[0]
+        console.log(mode);
+        if (mode == 1){
+          map.flyTo({center: [-0.115356, 51.511734], zoom: 11});
+        }else{
+          map.flyTo({center: [0.216980, 51.479779], zoom: 21});
+        }
 
-      
-// var oscPort = new osc.WebSocketPort({
-//     url: "ws://localhost:8081" // URL to your Web Socket server.
-// });
-//
-// oscPort.open(function () {
-//   // send
-//   // For most Ports, send() should only be called after the "open" event fires.
-//   // oscPort.send({
-//   //     address: "/carrier/frequency",
-//   //     args: 440
-//   // });
-//
-// });
-//
-// // listen
-// oscPort.on("message", function (oscMsg) {
-//     console.log("An OSC message just arrived! client", oscMsg);
-// });
+      };
 
 },{}]},{},[1]);
