@@ -42,3 +42,4 @@ wss.on('connection', function connection(ws) {
 // start server
 server.on('request', app);
 server.listen(8081);
+console.log("server started at 127.0.0.0:8081");

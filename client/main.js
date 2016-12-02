@@ -5,8 +5,123 @@ mapboxgl.accessToken = 'pk.eyJ1IjoiY2FydG9taWtlIiwiYSI6IjA3ODMzYzc1NDQ5ZmZhMWY1Z
 
 var map = new mapboxgl.Map({
     container: 'map',
-    style: 'mapbox://styles/mapbox/streets-v9'
+    style: 'mapbox://styles/cartomike/cim4zpta4012pccm32m19b1fb'
 });
+
+
+var framesPerSecond = 15;
+var initialOpacity = 1
+var opacity = initialOpacity;
+var initialRadius = 8;
+var radius = initialRadius;
+var maxRadius = 18;
+
+map.on('load', function () {
+
+    // Add a source and layer displaying a point which will be animated in a circle.
+    map.addSource('point', {
+        "type": "geojson",
+        "data":     {
+              "type": "FeatureCollection",
+              "features": [
+                {
+                  "geometry": {
+                    "type": "Point",
+                    "coordinates": [
+                      -0.115356, 51.511734
+                    ]
+                  },
+                  "type": "Feature",
+                  "properties": {
+                    "latitude": 28.0,
+                    "country": "Algeria",
+                    "personel": "Weidong ?",
+                    "count": 1,
+                    "longitude": 3.0
+                  }
+                },
+                {
+                  "geometry": {
+                    "type": "Point",
+                    "coordinates": [
+                    0.216980, 51.479779
+                    ]
+                  },
+                  "type": "Feature",
+                  "properties": {
+                    "latitude": -34.0,
+                    "country": "Argentina",
+                    "personel": "Simone ?,Amy Donovan",
+                    "count": 2,
+                    "longitude": -64.0
+                  }
+                },
+                {
+                  "geometry": {
+                    "type": "Point",
+                    "coordinates": [
+                    -0.309750,51.475773
+                    ]
+                  },
+                  "type": "Feature",
+                  "properties": {
+                    "latitude": -34.0,
+                    "country": "Argentina",
+                    "personel": "Simone ?,Amy Donovan",
+                    "count": 2,
+                    "longitude": -64.0
+                  }
+                }]
+              }
+
+    });
+
+    map.addLayer({
+        "id": "point",
+        "source": "point",
+        "type": "circle",
+        "paint": {
+            "circle-radius": initialRadius,
+            "circle-radius-transition": {duration: 0},
+            "circle-opacity-transition": {duration: 0},
+            "circle-color": "#007cbf"
+        }
+    });
+
+    map.addLayer({
+        "id": "point1",
+        "source": "point",
+        "type": "circle",
+        "paint": {
+            "circle-radius": initialRadius,
+            "circle-color": "#007cbf"
+        }
+    });
+
+
+    function animateMarker(timestamp) {
+        setTimeout(function(){
+            requestAnimationFrame(animateMarker);
+
+            radius += (maxRadius - radius) / framesPerSecond;
+            opacity -= ( .9 / framesPerSecond );
+
+            map.setPaintProperty('point', 'circle-radius', radius);
+            map.setPaintProperty('point', 'circle-opacity', opacity);
+
+            if (opacity <= 0) {
+                radius = initialRadius;
+                opacity = initialOpacity;
+            }
+
+        }, 1000 / framesPerSecond);
+
+    }
+
+    // Start the animation.
+    animateMarker(0);
+});
+
 
 
 var ws = new WebSocket('ws://localhost:8081');
@@ -16,9 +131,12 @@ var ws = new WebSocket('ws://localhost:8081');
         var mode = argsArray.args[0]
         console.log(mode);
         if (mode == 1){
+          map.flyTo({center: [0.216980, 51.479779], zoom: 20});
+        }else if(mode == 2) {
+          map.flyTo({center: [-0.309750,51.475773], zoom: 20});
+        }else {
           map.flyTo({center: [-0.115356, 51.511734], zoom: 11});
-        }else{
-          map.flyTo({center: [0.216980, 51.479779], zoom: 21});
+
         }
 
       };
