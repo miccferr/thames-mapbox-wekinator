@@ -60,8 +60,8 @@ map.on('load', function () {
                   "type": "Feature",
                   "properties": {
                     "latitude": -34.0,
-                    "country": "Argentina",
-                    "personel": "Simone ?,Amy Donovan",
+                    "country": "Argentina2",
+                    "personel": "S,Amy Donovan",
                     "count": 2,
                     "longitude": -64.0
                   }
@@ -112,25 +112,25 @@ map.on('load', function () {
     function animateMarker(timestamp) {
         setTimeout(function(){
             requestAnimationFrame(animateMarker);
-
             radius += (maxRadius - radius) / framesPerSecond;
             opacity -= ( .9 / framesPerSecond );
-
-            map.setPaintProperty('point', 'circle-radius', radius);
-            map.setPaintProperty('point', 'circle-opacity', opacity);
-
-            if (opacity <= 0) {
+            if (opacity <= 0 ) {
                 radius = initialRadius;
                 opacity = initialOpacity;
             }
-
+            map.setPaintProperty('point', 'circle-radius', radius);
+            map.setPaintProperty('point', 'circle-opacity', opacity);
         }, 1000 / framesPerSecond);
-
     }
 
     // Start the animation.
     animateMarker(0);
 });
+
+// var popup = new mapboxgl.Popup({offset:[0, -30]})
+//     .setText('Construction on the Washington Monument began in 1848.')
+//     .setLngLat([-0.309750,51.475773])
+//     .addTo(map);
 
 
 
@@ -143,16 +143,16 @@ ws.onmessage = function (event) {
   if (mode == 1){
     map.flyTo({center: [0.216980, 51.479779], zoom: 15, pitch: 60, bearing: -60});
     // map.flyTo({center: [0.216980, 51.479779], zoom: 20});
-    var popup = new mapboxgl.Popup({offset:[0, -30]})
-        .setText('Construction on the Washington Monument began in 1848.')
-        .setLngLat([0.216980, 51.479779]);
+    // var popup = new mapboxgl.Popup({offset:[0, -30]})
+    //     .setText('Construction on the Washington Monument began in 1848.')
+    //     .setLngLat([0.216980, 51.479779]);
 
   }else if(mode == 2) {
     map.flyTo({center: [-0.309750,51.475773], zoom: 15, pitch: 60, bearing: -60});
     // create the popup
-    var popup = new mapboxgl.Popup({offset:[0, -30]})
-        .setText('Construction on the Washington Monument began in 1848.')
-        .setLngLat([-0.309750,51.475773]);
+    // var popup = new mapboxgl.Popup({offset:[0, -30]})
+    //     .setText('Construction on the Washington Monument began in 1848.')
+    //     .setLngLat([-0.309750,51.475773]);
     // create DOM element for the marker
     // var el = document.createElement('div');
     // el.id = 'marker';
@@ -171,5 +171,32 @@ ws.onmessage = function (event) {
   }
 
 };
+
+
+
+// When a click event occurs near a polygon, open a popup at the location of
+// the feature, with description HTML from its properties.
+map.on('click', function (e) {
+  console.log(e);
+    var features = map.queryRenderedFeatures(e.point, { layers: ['point'] });
+    if (!features.length) {
+        return;
+    }
+
+    var feature = features[0];
+
+    var popup = new mapboxgl.Popup()
+        .setLngLat(map.unproject(e.point))
+        .setHTML(feature.properties.country)
+        .addTo(map);
+});
+
+
+// Use the same approach as above to indicate that the symbols are clickable
+// by changing the cursor style to 'pointer'.
+map.on('mousemove', function (e) {
+    var features = map.queryRenderedFeatures(e.point, { layers: ['point'] });
+    map.getCanvas().style.cursor = (features.length) ? 'pointer' : '';
+});
 
 },{}]},{},[1]);
