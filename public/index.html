@@ -1,13 +1,27 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.28.0/mapbox-gl.js'></script>
-    <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.28.0/mapbox-gl.css' rel='stylesheet' />
+  <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.12.2/mapbox-gl.js'></script>
+  <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.12.2/mapbox-gl.css' rel='stylesheet' />
     <style media="screen">
       #map{
         height: 800px;
         width: auto;
       }
+
+      #marker {
+          background-image: url('https://www.mapbox.com/mapbox-gl-js/assets/washington-monument.jpg');
+          background-size: cover;
+          width: 50px;
+          height: 50px;
+          border-radius: 50%;
+          cursor: pointer;
+      }
+
+      .mapboxgl-popup {
+          max-width: 200px;
+      }
+
     </style>
 </head>
 

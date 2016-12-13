@@ -16,6 +16,15 @@ var initialRadius = 8;
 var radius = initialRadius;
 var maxRadius = 18;
 
+
+// create the popup
+var popup = new mapboxgl.Popup({offset:[0, -30]})
+    .setText('Construction on the Washington Monument began in 1848.');
+
+
+
+
+
 map.on('load', function () {
 
     // Add a source and layer displaying a point which will be animated in a circle.
@@ -125,18 +134,39 @@ map.on('load', function () {
 
 
 var ws = new WebSocket('ws://localhost:8081');
-      ws.onmessage = function (event) {
-        // console.log(JSON.parse(event.data));
-        var argsArray = JSON.parse(event.data)
-        var mode = argsArray.args[0]
-        console.log(mode);
-        if (mode == 1){
-          map.flyTo({center: [0.216980, 51.479779], zoom: 20});
-        }else if(mode == 2) {
-          map.flyTo({center: [-0.309750,51.475773], zoom: 20});
-        }else {
-          map.flyTo({center: [-0.115356, 51.511734], zoom: 11});
+ws.onmessage = function (event) {
+  // console.log(JSON.parse(event.data));
+  var argsArray = JSON.parse(event.data)
+  var mode = argsArray.args[0]
+  console.log(mode);
+  if (mode == 1){
+    map.flyTo({center: [0.216980, 51.479779], zoom: 15, pitch: 60, bearing: -60});
+    // map.flyTo({center: [0.216980, 51.479779], zoom: 20});
+    var popup = new mapboxgl.Popup({offset:[0, -30]})
+        .setText('Construction on the Washington Monument began in 1848.')
+        .setLngLat([0.216980, 51.479779]);
 
-        }
+  }else if(mode == 2) {
+    map.flyTo({center: [-0.309750,51.475773], zoom: 15, pitch: 60, bearing: -60});
+    // create the popup
+    var popup = new mapboxgl.Popup({offset:[0, -30]})
+        .setText('Construction on the Washington Monument began in 1848.')
+        .setLngLat([-0.309750,51.475773]);
+    // create DOM element for the marker
+    // var el = document.createElement('div');
+    // el.id = 'marker';
+    // create the marker
+    // new mapboxgl.Marker(el, {offset:[-25, -25]})
+    //     .setLngLat([-0.309750,51.475773])
+    //     .setPopup(popup) // sets a popup on this marker
+    //     .addTo(map);
 
-      };
+    // map.setPopup('point',popup)
+    // .addTo(map);
+  }else {
+    // map.flyTo({center: [-0.115356, 51.511734], zoom: 11});
+    map.flyTo({center: [-0.115356, 51.511734], zoom: 11, pitch: 0, bearing: 0});
+
+  }
+
+};
